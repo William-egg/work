@@ -1,6 +1,11 @@
 package ThreadLrearn;
 
 import java.sql.SQLOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  *1。  首先是进程和线程的区别
@@ -29,7 +34,7 @@ public class main {
         System.out.println("Thread is alive: " + t.isAlive());
         System.out.println("======================");
     }
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         // 1. 继承Tread类
         MyThread myThread = new MyThread();
         myThread.start(); // 启动线程
@@ -43,6 +48,13 @@ public class main {
         t2.start();
 
         // 3. 使用Callable和FutureTask
-
+        Callable myC = ()->{
+          return Thread.currentThread().getName();
+        };//因为这里是个接口类，可以直接这么干。
+        FutureTask<String> futureTask = new FutureTask<>(myC);
+        Thread t3 = new Thread(futureTask);
+        t3.start();
+        String s = futureTask.get(); // 阻塞主线程，直到子线程执行完毕
+        System.out.println(s);
     }
 }
